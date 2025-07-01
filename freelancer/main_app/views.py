@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth import login
 from django.dispatch import receiver
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -52,7 +53,7 @@ def view_profile(request, user_id):
 def edit_profile(request, user_id):
     if user_id != request.user.id:
         return redirect(reverse('home'))
-    
+
 
 class UserUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'auth/user_form.html'
@@ -62,6 +63,45 @@ class UserUpdate(LoginRequiredMixin, UpdateView):
     form_class = ProfileUpdateForm
 
 
+@login_required
+def create_job(request):
+    if request.method == "POST":
+        # Obtain request's data
+        user = request.user
+        title = request.POST["title"]
+        reward = request.POST["reward"]
+        description = request.POST["description"]
+        category_title = request.POST["category"]
+        if category_title:
+            category = Category.objects.get(title=category_title)
+        else:
+            category = None
+        # Create job
+        job = Job(job_title=title, client=user, reward=reward, category=category, description=description)
+        job.save()
+        return HttpResponseRedirect(reverse("home"))
+
+    categories = Category.objects.all()
+    return render(request, "jobs/job_create.html", {
+        "categories":categories
+    })
+
+def jobs_list(request):
+    jobs = Job.objects.filter(is_active=True, is_finished=False).order_by("id").reverse()
+    return render(request, "jobs/index.html", {
+        "jobs":jobs,
+    })
+
+def jobs_detail(request, pk):
+    job = Job.objects.get(id=pk)
+    print(job)
+    return render(request, 'jobs/job_detail.html', {'job':job})
+
+def jobs_delete(request, pk):
+    if request.method == "POST":
+        job = Job.objects.get(id=pk).delete()
+
+    return redirect(reverse('jobs_list'))
 # class UserUpdate(LoginRequiredMixin, UpdateView):
     # template_name = 'auth/user_form.html'
     # context_object_name = 'user'

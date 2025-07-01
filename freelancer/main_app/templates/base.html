@@ -23,7 +23,9 @@
             </li>
           </ul>
           <ul class="right">
+            <li><a href="{% url 'jobs_list' %}">Jobs</a></li>
             {% if user.is_authenticated %}
+            <li><a href="{% url 'jobs_create' %}">list a Job</a></li>
             <li><a href="{% url 'profiles_detail' user_id=user.id%}">{{user}}</a></li>
             <li><a href="{% url 'logout' %}">logout</a></li>
             {% else %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="job-card">
+    <div class="card-header">
+      <a href="{% url 'jobs_detail' pk=job.id%}">
+        {{job.job_title}}
+      </a>
+    </div>
+    <div class="card-body">{{job.description}}</div>
+    <div class="card-footer">{{job.reward}}</div>
+  </div>
+
+{% if user.is_authenticated and user.id != job.client.id %}
+  <form action="" method="POST">
+    {% csrf_token %}
+    <button type="submit">Request To Work</button>
+  </form>
+{% endif %}
+{% if user.is_authenticated and user.id == job.client.id %}
+  <form action="{% url 'jobs_delete' pk=job.id%}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete Job</button>
+  </form>
+{% endif %}
+  
+{% endblock %}
