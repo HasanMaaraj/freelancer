@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{profile_user.profile.bio}}'s Profile</h1>
+{% if profile_user.first_name and profile_user.last_name %}
+  <h3>Name:</h3>
+  <p>{{profile_user.first_name}} {{profile_user.last_name}}</p>
+{% endif %}
+{% if profile_user.email %}
+  <h3>email:</h3>
+  <p>{{ profile_user.email }}</p>
+{% endif %}
+<h3>Category:</h3>
+<p> {{ profile_user.profile.category }}</p>
+<h3>Bio:</h3>
+<p> {{ profile_user.profile.bio }}</p>
+{% if user.is_authenticated and user.id == profile_user.id %}
+<a href="{% url 'profiles_update' user.id %}"><button>Edit Profile</button></a>
+{% endif %}
+{% endblock %}
