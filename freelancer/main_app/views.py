@@ -150,6 +150,29 @@ def decline_request(request, pk):
     work_request.delete()
     return redirect(reverse('jobs_list'))
 
+@login_required
+def upload(request, pk):
+    if request.method != "POST":
+        return redirect(reverse("home"))
+    job = Job.objects.get(id=pk)
+    job.file = request.FILES.get("file")
+    job.is_finished = True
+    job.save()
+    notification = Notification(to=job.client,job=job, message=f"{job.freelancer} submitted the work on {job.job_title}")
+    notification.save()
+    return redirect(reverse("home"))
+
+@login_required
+def download(request, pk):
+    if request.method != "POST":
+        return redirect(reverse("home"))
+    job = Job.objects.get(id=pk)
+    file = job.file
+    response = HttpResponse(file, content_type="application/adminupload")
+    response['Content-Disposition'] = f'attachment; filename="{job.file.name}"'
+    return response
+
+
 # class UserUpdate(LoginRequiredMixin, UpdateView):
     # template_name = 'auth/user_form.html'
     # context_object_name = 'user'

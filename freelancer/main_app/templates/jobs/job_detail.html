@@ -11,6 +11,13 @@
   </div>
 
 {% if user.is_authenticated and user.id != job.client.id %}
+  {% if user == job.freelancer and not job.is_finished %}
+    <form action="{% url 'upload' pk=job.id%}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" required>
+        <button type="submit">Send file</button>
+    </form>
+  {% endif %}
   {% if user_have_requested %}
   <form action="{% url 'delete_request' pk=job.id%}" method="POST">
     {% csrf_token %}
@@ -22,6 +29,7 @@
     <button type="submit">Request To Work</button>
   </form>
   {% endif %}
+
 {% endif %}
 {% if user.is_authenticated and user.id == job.client.id %}
   {% for work_request in work_requests %}
@@ -39,6 +47,13 @@
       </form>
     </div>
   {% endfor %}
+  {% if job.is_finished %}
+    <form action="{% url 'download' job.id %}" method="POST">
+        {% csrf_token %}
+        {{job.file}}
+        <button type="submit">Download file</button>
+    </form>
+  {% endif %}
   <form action="{% url 'jobs_delete' pk=job.id%}" method="POST">
     {% csrf_token %}
     <button type="submit">Delete Job</button>
