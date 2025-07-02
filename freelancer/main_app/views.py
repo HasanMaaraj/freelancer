@@ -98,9 +98,11 @@ def jobs_detail(request, pk):
     requesting_freelancers = [work_request.freelancer.id for work_request in work_requests]
     print(requesting_freelancers)
     user_have_requested = request.user.id in requesting_freelancers
+    
 
-
-    return render(request, 'jobs/job_detail.html', {'job':job, 'user_have_requested':user_have_requested})
+    return render(request, 'jobs/job_detail.html', {'job':job,
+            'work_requests': work_requests,
+            'user_have_requested':user_have_requested})
 
 def jobs_delete(request, pk):
     if request.method == "POST":
@@ -125,6 +127,27 @@ def delete_request(request, pk):
     found_request.delete()
     notification = Notification(to=job.client, job=job, message=f"{request.user} canceled the request to work on {job.job_title}")
     notification.save()
+    return redirect(reverse('jobs_list'))
+
+@login_required
+def accept_request(request, pk):
+    work_request = RequestToClient.objects.get(id=pk)
+    job = work_request.job
+    job.is_active = False
+    job.freelancer = work_request.freelancer
+    RequestToClient.objects.filter(job=job).delete()
+    job.save()
+    notification = Notification(to=job.freelancer, job=job, message=f"{request.user} have accepted your request to work on {job.job_title}")
+    notification.save()
+    return redirect(reverse('jobs_list'))
+
+@login_required
+def decline_request(request, pk):
+    work_request = RequestToClient.objects.get(id=pk)
+    
+    notification = Notification(to=work_request.freelancer, job=work_request.job, message=f"{work_request.freelancer} have declined your request to work on {work_request.job.job_title}")
+    notification.save()
+    work_request.delete()
     return redirect(reverse('jobs_list'))
 
 # class UserUpdate(LoginRequiredMixin, UpdateView):

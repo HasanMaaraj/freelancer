@@ -13,4 +13,6 @@ urlpatterns = [
     path('jobs/<int:pk>/delete', views.jobs_delete, name='jobs_delete'),
     path('jobs/<int:pk>/send-request', views.send_request, name='send_request'),
     path('jobs/<int:pk>/delete-request', views.delete_request, name='delete_request'),
+    path('requests/<int:pk>/accept', views.accept_request, name='accept_request'),
+    path('requests/<int:pk>/decline', views.decline_request, name='decline_request'),
 ]

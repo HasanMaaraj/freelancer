@@ -40,8 +40,8 @@ class Notification(models.Model):
 
 
 class RequestToClient(models.Model):
-    freelancer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_request_to_client")
-    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_request_from_freelancer")
+    freelancer = models.ForeignKey(User, on_delete = models.CASCADE, related_name="sent_request_to_client")
+    client = models.ForeignKey(User, on_delete = models.CASCADE, related_name="received_request_from_freelancer")
     job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="request_to_client")
 
     def __str__(self):

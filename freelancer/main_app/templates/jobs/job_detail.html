@@ -24,10 +24,27 @@
   {% endif %}
 {% endif %}
 {% if user.is_authenticated and user.id == job.client.id %}
+  {% for work_request in work_requests %}
+    <div class="request-card">
+      <div class="card-header">
+        <p>From: {{work_request.freelancer}}</p>
+      </div>
+      <form action="{% url 'accept_request' pk=work_request.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Accept</button>
+      </form>
+      <form action="{% url 'decline_request' pk=work_request.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Decline</button>
+      </form>
+    </div>
+  {% endfor %}
   <form action="{% url 'jobs_delete' pk=job.id%}" method="POST">
     {% csrf_token %}
     <button type="submit">Delete Job</button>
   </form>
 {% endif %}
+
+
   
 {% endblock %}
