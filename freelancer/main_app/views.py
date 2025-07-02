@@ -94,14 +94,39 @@ def jobs_list(request):
 
 def jobs_detail(request, pk):
     job = Job.objects.get(id=pk)
-    print(job)
-    return render(request, 'jobs/job_detail.html', {'job':job})
+    work_requests = RequestToClient.objects.filter(job=job)
+    requesting_freelancers = [work_request.freelancer.id for work_request in work_requests]
+    print(requesting_freelancers)
+    user_have_requested = request.user.id in requesting_freelancers
+
+
+    return render(request, 'jobs/job_detail.html', {'job':job, 'user_have_requested':user_have_requested})
 
 def jobs_delete(request, pk):
     if request.method == "POST":
         job = Job.objects.get(id=pk).delete()
 
     return redirect(reverse('jobs_list'))
+
+@login_required
+def send_request(request, pk):
+    job = Job.objects.get(id=pk)
+    # client = User.objects.get()
+    work_request = RequestToClient(freelancer=request.user, client=job.client, job=job)
+    work_request.save()
+    notification = Notification(to=job.client, job=job, message=f"{request.user} submitted the work on {job.job_title}")
+    notification.save()
+    return redirect(reverse('jobs_list'))
+
+@login_required
+def delete_request(request, pk):
+    job = Job.objects.get(id=pk)
+    found_request = RequestToClient.objects.get(job=job)
+    found_request.delete()
+    notification = Notification(to=job.client, job=job, message=f"{request.user} canceled the request to work on {job.job_title}")
+    notification.save()
+    return redirect(reverse('jobs_list'))
+
 # class UserUpdate(LoginRequiredMixin, UpdateView):
     # template_name = 'auth/user_form.html'
     # context_object_name = 'user'

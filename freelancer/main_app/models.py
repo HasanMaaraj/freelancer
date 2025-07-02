@@ -32,6 +32,7 @@ class Job(models.Model):
 class Notification(models.Model):
     to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notification")
     message = models.CharField(max_length=128)
+    job =  models.ForeignKey(Job, on_delete=models.CASCADE, related_name="notification", default='')
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
