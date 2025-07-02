@@ -1,16 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Jobs</h1>
-  {% for job in jobs %}
-  <div class="job-card">
-    <div class="card-header">
-      <a href="{% url 'jobs_detail' pk=job.id %}">
-        {{job.job_title}}
-      </a>
-    </div>
-    <div class="card-body">{{job.description}}</div>
-    <div class="card-footer">{{job.reward}}</div>
+  <h1 class="mb-4">Jobs</h1>
+  <div class="row g-4">
+    {% for job in jobs %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <a href="{% url 'jobs_detail' pk=job.id %}" class="text-white text-decoration-none fw-bold">
+              {{ job.job_title }}
+            </a>
+          </div>
+          <div class="card-body">
+            <p class="card-text"> category: {{ job.category }}</p>
+            <p class="card-text">{{ job.description }}</p>
+          </div>
+          <div class="card-footer text-end">
+            <span class="fw-semibold text-success">{{ job.reward }}</span>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">No jobs available.</div>
+      </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-  
 {% endblock %}

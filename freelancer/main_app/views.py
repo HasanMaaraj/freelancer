@@ -129,7 +129,7 @@ def send_request(request, pk):
     # client = User.objects.get()
     work_request = RequestToClient(freelancer=request.user, client=job.client, job=job)
     work_request.save()
-    notification = Notification(to=job.client, job=job, message=f"{request.user} submitted the work on {job.job_title}")
+    notification = Notification(to=job.client, job=job, message=f"{request.user} requested to work on {job.job_title}")
     notification.save()
     return redirect(reverse('jobs_list'))
 
@@ -158,7 +158,7 @@ def accept_request(request, pk):
 def decline_request(request, pk):
     work_request = RequestToClient.objects.get(id=pk)
     
-    notification = Notification(to=work_request.freelancer, job=work_request.job, message=f"{work_request.freelancer} have declined your request to work on {work_request.job.job_title}")
+    notification = Notification(to=work_request.freelancer, job=work_request.job, message=f"{work_request.client} have declined your request to work on {work_request.job.job_title}")
     notification.save()
     work_request.delete()
     return redirect(reverse('jobs_list'))

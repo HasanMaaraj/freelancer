@@ -1,44 +1,81 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>{{profile_user.profile.bio}}'s Profile</h1>
-{% if profile_user.first_name and profile_user.last_name %}
-  <h3>Name:</h3>
-  <p>{{profile_user.first_name}} {{profile_user.last_name}}</p>
-{% endif %}
-{% if profile_user.email %}
-  <h3>email:</h3>
-  <p>{{ profile_user.email }}</p>
-{% endif %}
-<h3>Category:</h3>
-<p> {{ profile_user.profile.category }}</p>
-<h3>Bio:</h3>
-<p> {{ profile_user.profile.bio }}</p>
-{% for job in listed_jobs %}
-  {% if listed_job.is_active or listed_job.client == user %}
-    <div class="job-card">
-      <div class="card-header">
-        <a href="{% url 'jobs_detail' pk=job.id %}">
-          {{job.job_title}}
-        </a>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h1 class="card-title mb-3">{{ profile_user.username }}'s Profile</h1>
+          {% if profile_user.first_name and profile_user.last_name %}
+            <h5>Name:</h5>
+            <p>{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+          {% endif %}
+          <h5>Bio:</h5>
+          <p>{{ profile_user.profile.bio }}</p>
+        </div>
       </div>
-      <div class="card-body">{{job.description}}</div>
-      <div class="card-footer">{{job.reward}}</div>
-    </div>
-  {% endif %}
-{% endfor %}
-{% if user.is_authenticated and user.id == profile_user.id %}
-{% for job in working_jobs %}
-    <div class="job-card">
-      <div class="card-header">
-        <a href="{% url 'jobs_detail' pk=job.id %}">
-          {{job.job_title}}
-        </a>
+
+      <h3 class="mt-4 mb-3">Listed Jobs</h3>
+      <div class="row g-3">
+        {% for job in listed_jobs %}
+          {% if job.is_active or job.client == user %}
+            <div class="col-12">
+              <div class="card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                  <a href="{% url 'jobs_detail' pk=job.id %}" class="text-white text-decoration-none fw-bold">
+                    {{ job.job_title }}
+                  </a>
+                </div>
+                <div class="card-body">
+                  <p class="card-text"> category: {{ job.category }}</p>
+                  <p class="card-text">{{ job.description }}</p>
+                </div>
+                <div class="card-footer text-end">
+                  <span class="fw-semibold text-success">{{ job.reward }}</span>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <div class="col-12">
+            <div class="alert alert-info">No listed jobs.</div>
+          </div>
+        {% endfor %}
       </div>
-      <div class="card-body">{{job.description}}</div>
-      <div class="card-footer">{{job.reward}}</div>
+
+      {% if user.is_authenticated and user.id == profile_user.id %}
+        <h3 class="mt-4 mb-3">Working Jobs</h3>
+        <div class="row g-3">
+          {% for job in working_jobs %}
+            <div class="col-12">
+              <div class="card h-100 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                  <a href="{% url 'jobs_detail' pk=job.id %}" class="text-white text-decoration-none fw-bold">
+                    {{ job.job_title }}
+                  </a>
+                </div>
+                <div class="card-body">
+            <p class="card-text"> category: {{ job.category }}</p>
+
+                  <p class="card-text">{{ job.description }}</p>
+                </div>
+                <div class="card-footer text-end">
+                  <span class="fw-semibold text-success">{{ job.reward }}</span>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="col-12">
+              <div class="alert alert-info">No working jobs.</div>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="mt-4 text-end">
+          <a href="{% url 'profiles_edit' %}" class="btn btn-outline-primary">Edit Profile</a>
+        </div>
+      {% endif %}
     </div>
-{% endfor %}
-<a href="{% url 'profiles_edit' %}"><button>Edit Profile</button></a>
-{% endif %}
+  </div>
+</div>
 {% endblock %}

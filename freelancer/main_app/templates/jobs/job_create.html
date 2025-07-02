@@ -1,26 +1,37 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Create A Job</h1>
-  <form action="{% url 'jobs_create' %}" method="POST">
-    {% csrf_token %}
-
-        <label for="title-input">Job title</label>
-        <input type="text" name="title" id="title-input" placeholder="Title" required>
-
-        <label for="reward-input">Reward</label>
-        <input type="number" min="1" name="reward" id="reward-input" placeholder="Reward in BD" required>
-
-        <label for="job-description-input">Job description</label>
-        <textarea name="description" id="job-description-input" rows="3" required></textarea>
-
-        <label for="category-input">Category:</label>
-        <select name="category" id="category-input" >
-            <!-- <option selected></option> -->
-            {% for category in categories %}
-            <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-        </select>
+  <h1 class="mb-4">Create A Job</h1>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <form action="{% url 'jobs_create' %}" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="title-input" class="form-label">Job Title</label>
+              <input type="text" name="title" id="title-input" class="form-control" placeholder="Title" required>
+            </div>
+            <div class="mb-3">
+              <label for="reward-input" class="form-label">Reward</label>
+              <input type="number" min="1" name="reward" id="reward-input" class="form-control" placeholder="Reward in BD" required>
+            </div>
+            <div class="mb-3">
+              <label for="job-description-input" class="form-label">Job Description</label>
+              <textarea name="description" id="job-description-input" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="category-input" class="form-label">Category</label>
+              <select name="category" id="category-input" class="form-select" required>
+                <option selected disabled value="">Select a category</option>
+                {% for category in categories %}
+                  <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit Job</button>
+          </form>
+        </div>
+      </div>
     </div>
-    <button type="submit">Submit job</button>
-  </form>
+  </div>
 {% endblock %}
