@@ -39,6 +39,6 @@
       <div class="card-footer">{{job.reward}}</div>
     </div>
 {% endfor %}
-<a href="{% url 'profiles_update' user.id %}"><button>Edit Profile</button></a>
+<a href="{% url 'profiles_edit' %}"><button>Edit Profile</button></a>
 {% endif %}
 {% endblock %}

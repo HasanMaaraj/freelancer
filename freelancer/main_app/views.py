@@ -58,13 +58,22 @@ def edit_profile(request, user_id):
     if user_id != request.user.id:
         return redirect(reverse('home'))
 
+@login_required
+def edit_profile(request):
+    if request.method == "POST":
+        request_user = User.objects.get(id=request.user.id)
 
-class UserUpdate(LoginRequiredMixin, UpdateView):
-    template_name = 'auth/user_form.html'
-    context_object_name = 'user'
-    queryset = User.objects.all()
-    print("queryset", queryset)
-    form_class = ProfileUpdateForm
+        request_user.first_name = request.POST["first_name"]
+        request_user.last_name = request.POST["last_name"]
+        request_user.profile.bio = request.POST["bio"]
+        request_user.profile.save()
+        request_user.save()
+        return redirect(reverse('home'))
+
+    user = request.user
+    return render(request, 'profiles/edit.html', {
+        'profile_user':user
+    })
 
 
 @login_required
