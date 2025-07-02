@@ -45,8 +45,12 @@ def save_profile(sender, instance, **kwargs):
 
 def view_profile(request, user_id):
     user = User.objects.get(id=user_id)
+    listed_jobs = Job.objects.filter(client=user)
+    working_jobs = Job.objects.filter(freelancer=user)
     return render(request, 'profiles/detail.html', {
         'profile_user': user,
+        'listed_jobs': listed_jobs,
+        'working_jobs': working_jobs,
     })
 
 @login_required

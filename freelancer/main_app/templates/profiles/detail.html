@@ -14,7 +14,31 @@
 <p> {{ profile_user.profile.category }}</p>
 <h3>Bio:</h3>
 <p> {{ profile_user.profile.bio }}</p>
+{% for job in listed_jobs %}
+  {% if listed_job.is_active or listed_job.client == user %}
+    <div class="job-card">
+      <div class="card-header">
+        <a href="{% url 'jobs_detail' pk=job.id %}">
+          {{job.job_title}}
+        </a>
+      </div>
+      <div class="card-body">{{job.description}}</div>
+      <div class="card-footer">{{job.reward}}</div>
+    </div>
+  {% endif %}
+{% endfor %}
 {% if user.is_authenticated and user.id == profile_user.id %}
+{% for job in working_jobs %}
+    <div class="job-card">
+      <div class="card-header">
+        <a href="{% url 'jobs_detail' pk=job.id %}">
+          {{job.job_title}}
+        </a>
+      </div>
+      <div class="card-body">{{job.description}}</div>
+      <div class="card-footer">{{job.reward}}</div>
+    </div>
+{% endfor %}
 <a href="{% url 'profiles_update' user.id %}"><button>Edit Profile</button></a>
 {% endif %}
 {% endblock %}
