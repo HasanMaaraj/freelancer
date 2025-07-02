@@ -172,6 +172,17 @@ def download(request, pk):
     response['Content-Disposition'] = f'attachment; filename="{job.file.name}"'
     return response
 
+@login_required
+def notifications(request, pk):
+    user = User.objects.get(id=pk)
+    if request.user != user:
+        return redirect(reverse("home"))
+    notifications_data = Notification.objects.filter(to=user).order_by("id").reverse()
+    return render(request, "notifications/notifications_page.html", {
+        "notifications": notifications_data,
+    })
+
+
 
 # class UserUpdate(LoginRequiredMixin, UpdateView):
     # template_name = 'auth/user_form.html'

@@ -17,4 +17,5 @@ urlpatterns = [
     path('requests/<int:pk>/decline', views.decline_request, name='decline_request'),
     path('upload/<int:pk>', views.upload, name='upload'),
     path('download/<int:pk>', views.download, name='download'),
+    path('notifications/<int:pk>', views.notifications, name='notifications')
 ]
