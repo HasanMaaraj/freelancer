@@ -37,7 +37,7 @@
         <button type="submit" class="btn btn-primary w-100">Request To Work</button>
       </form>
     {% endif %}
-    {% else %}
+    {% elif job.freelancer != user %}
       <div class="alert alert-info">This job is not active.</div>
     {% endif %}
   {% endif %}
